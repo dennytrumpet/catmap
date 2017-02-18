@@ -3,13 +3,13 @@
 /*
 Plugin Name: Cat Map
 Plugin URI: http://voxmd.com
-Description: 
+Description:
 Version: 1.00
 Author: Dennis McGhee
 Author URI: http://the3rdplace.co
 
-	Copyright 2017  DENNIS MCGHEE 
-	
+	Copyright 2017  DENNIS MCGHEE
+
 	(email : dennis.mcghee@voxmd.com)
 
 */
@@ -36,16 +36,24 @@ function implement_ajax() {
         $has_children = get_categories("parent=$parent_cat_ID");
         if ( $has_children ) {
             wp_dropdown_categories("show_option_none=Select Course&orderby=name&id=child_cat&parent=$parent_cat_ID"); ?>
-                <article <?php post_class(); ?>>
-                    <header>
-                        <h2 class="entry-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-                    </header>
-                    <div class="entry-summary">
-                        <?php the_excerpt(); ?>
-                    </div>
-                </article>
+            <?php $child_cat_ID = $_POST['child_cat_ID']; ?>
+            <?php $query = new WP_Query(array(
+                'post_type'=> 'post',
+                'cat' => $child_cat_ID
+            )); ?>
+            <?php if($query->have_posts()): ?>
+                <p>Check out <i>these</i> fuckin posts:</p>
+                <?php while ($query->have_posts() ): ?>
+                    <?php $query->the_post(); ?>
+                    <article>
+                        <h2><a href="<?php the_permalink(); ?>"> <?php the_title ();?></a></h2>
+                        <?php the_content(); ?>
+                    </article>
+                <?php endwhile; ?>
+                <?php wp_reset_postdata(); ?>
+            <?php endif; ?>
                 <?php
-        
+
         } else {
             ?><select name="sub_cat_disabled" id="sub_cat_disabled" disabled="disabled"><option>No child categories!</option></select><?php
         }
@@ -55,10 +63,10 @@ function implement_ajax() {
 add_action('wp_ajax_category_select_action', 'implement_ajax');
 add_action('wp_ajax_nopriv_category_select_action', 'implement_ajax');//for users that are not logged in.
 
-//this is optional, only if you are not already using jQuery  
+//this is optional, only if you are not already using jQuery
 function load_jquery() {
-    wp_enqueue_script('jquery');            
-}     
+    wp_enqueue_script('jquery');
+}
 add_action('init', 'load_jquery');
 // register jquery and style on initialization
 add_action('init', 'register_script');
