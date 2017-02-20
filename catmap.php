@@ -42,15 +42,16 @@ function implement_ajax() {
                 'cat' => $child_cat_ID
             )); ?>
             <?php if($query->have_posts()): ?>
-                <p>Check out <i>these</i> fuckin posts:</p>
+                <div class="course-area">
                 <?php while ($query->have_posts() ): ?>
                     <?php $query->the_post(); ?>
-                    <article>
+                    <article class="course">
                         <h2><a href="<?php the_permalink(); ?>"> <?php the_title ();?></a></h2>
                         <?php the_content(); ?>
                     </article>
                 <?php endwhile; ?>
                 <?php wp_reset_postdata(); ?>
+                </div>
             <?php endif; ?>
                 <?php
 
